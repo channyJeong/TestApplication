@@ -1,0 +1,86 @@
+version: '3'
+networks:
+  project:
+    external: true
+
+services:
+  spark-master:
+    image: bde2020/spark-master:2.4.5-hadoop2.7
+    container_name: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    environment:
+      - INIT_DAEMON_STEP=setup_spark
+    networks:
+      project:
+        ipv4_address: 172.22.0.7
+#    volumes:
+#      - /Users/a10150389/docker/data/spark-master:/spark
+  spark-worker-1:
+    image: bde2020/spark-worker:2.4.5-hadoop2.7
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+    networks:
+      project:
+        ipv4_address: 172.22.0.2
+  spark-worker-2:
+    image: bde2020/spark-worker:2.4.5-hadoop2.7
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8081"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+    networks:
+      project:
+        ipv4_address: 172.22.0.10
+
+#  zeppelin:
+#    image: apache/zeppelin:0.9.0
+#    container_name: zeppelin
+#    depends_on:
+#      - spark-master
+#    ports:
+#      - "8888:8080"
+#    environment:
+#      - "SPARK_MASTER=spark://spark-master:7077"
+#      - "ZEPPELIN_NOTEBOOK_DIR=/opt/zeppelin/notebook"
+#      - "SPARK_HOME=/spark"
+#    networks:
+#      project:
+#        ipv4_address: 172.22.0.3
+#    volumes:
+#      - /Users/a10150389/docker/data/zeppelin:/opt/zeppelin/notebook
+#      - /Users/a10150389/docker/data/spark-master/spark:/spark
+  database:
+    image: mariadb:latest
+    restart: always
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+
+    container_name: mariadb
+    ports:
+      - "3307:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: project
+      TZ: Asia/Seoul
+    volumes:
+      - /Users/a10150389/docker/data/mariadb:/var/lib/mysql
+    networks:
+      project:
+        ipv4_address: 172.22.0.4
+
+#networks:
+#  project_net:
+#    ipam:
+#      driver: default
+#      config:
+#        - subnet: 172.21.0.0/16
