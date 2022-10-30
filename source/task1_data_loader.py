@@ -1,4 +1,4 @@
-# mariadb-example.py
+# project.py
 from pyspark.sql import SparkSession
 from datetime import datetime
 from pyspark.sql.functions import col,lit,split
