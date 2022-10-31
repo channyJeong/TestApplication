@@ -1,0 +1,31 @@
+| driver | CREATE TABLE `driver` (
+  `id` bigint(20) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 |
+
+
+| driver | CREATE TABLE `driver` (
+  `id` bigint(20) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `name` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 |
+
+
+| booking | CREATE TABLE `booking` (
+  `id` bigint(20) NOT NULL,
+  `date_create` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `id_driver` bigint(20) NOT NULL,
+  `id_passenger` bigint(20) NOT NULL,
+  `rating` int(11) NOT NULL,
+  `start_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `end_date` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `tour_value` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id_driver` (`id_driver`),
+  KEY `id_passenger` (`id_passenger`),
+  CONSTRAINT `booking_ibfk_1` FOREIGN KEY (`id_driver`) REFERENCES `driver` (`id`),
+  CONSTRAINT `booking_ibfk_2` FOREIGN KEY (`id_passenger`) REFERENCES `passenger` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 |
